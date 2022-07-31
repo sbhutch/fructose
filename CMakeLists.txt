@@ -11,10 +11,20 @@ set(CONTENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/content)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 ###############################################################################
+# Find external dependencies.
+###############################################################################
+find_package(SDL2 CONFIG REQUIRED)
+
+###############################################################################
 # Create target executable.
 ###############################################################################
 file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+###############################################################################
+# Set target dependencies.
+###############################################################################
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
 ###############################################################################
 # Set target C++ standard.
