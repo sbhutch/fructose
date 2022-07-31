@@ -1,0 +1,4 @@
+AlignTrailingComments: true
+BasedOnStyle: WebKit
+FixNamespaceComments: true
+SortIncludes: false
