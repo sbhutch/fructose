@@ -2,18 +2,18 @@
 #include <algorithm>
 #include <array>
 
-bool intersects(SDL_FPoint o, SDL_FPoint d, SDL_FRect r)
+bool sweep_point(SDL_FPoint position, SDL_FPoint velocity, SDL_FRect obstacle)
 {
-    float tx1 = (r.x - o.x) / d.x;
-    float ty1 = (r.y - o.y) / d.y;
+    float tx1 = (obstacle.x - position.x) / velocity.x;
+    float ty1 = (obstacle.y - position.y) / velocity.y;
 
-    float tx2 = (r.x + r.w - o.x) / d.x;
-    float ty2 = (r.y + r.h - o.y) / d.y;
+    float tx2 = (obstacle.x + obstacle.w - position.x) / velocity.x;
+    float ty2 = (obstacle.y + obstacle.h - position.y) / velocity.y;
 
     float tmin = std::max(std::min(tx1, tx2), std::min(ty1, ty2));
     float tmax = std::min(std::max(tx1, tx2), std::max(ty1, ty2));
 
-    return tmin >= 0 && tmin <= 1 && tmax >= tmin;
+    return tmin < 0 || tmin > 1 || tmin > tmax;
 }
 
 void draw_scene(SDL_Renderer* renderer)
@@ -33,10 +33,10 @@ void draw_scene(SDL_Renderer* renderer)
     };
 
     for (auto r : rs) {
-        if (intersects(a, d, r)) {
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        } else {
+        if (sweep_point(a, d, r)) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        } else {
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         }
         SDL_RenderDrawRectF(renderer, &r);
     }
