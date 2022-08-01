@@ -1,5 +1,19 @@
+#include <algorithm>
 #include <SDL.h>
-#include <cstdio>
+
+bool intersects(SDL_FPoint o, SDL_FPoint d, SDL_FRect r)
+{
+    float tx1 = (r.x - o.x) / d.x;
+    float ty1 = (r.y - o.y) / d.y;
+
+    float tx2 = (r.x + r.w - o.x) / d.x;
+    float ty2 = (r.y + r.h - o.y) / d.y;
+
+    float tmin = std::max(std::min(tx1, tx2), std::min(ty1, ty2));
+    float tmax = std::min(std::max(tx1, tx2), std::max(ty1, ty2));
+
+    return tmin >= 0 && tmin <= 1 && tmax >= tmin;
+}
 
 int main(int, char**)
 {
@@ -30,6 +44,7 @@ int main(int, char**)
             }
         }
 
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
     }
